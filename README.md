@@ -1,31 +1,22 @@
-# Train CIFAR10 with PyTorch
 
-I'm playing with [PyTorch](http://pytorch.org/) on the CIFAR10 dataset.
+## install requirements
+python==3.7
+pytorch==1.5
+easydict
+pillow
+建议使用conda工具进行安装，安装好conda之后，执行
+`conda activate base`
+`conda install pytorch torchvision torchaudio cudatoolkit=10.1 -c pytorch`
+`conda install pillow`
+`pip install easydict`
 
-## Prerequisites
-- Python 3.6+
-- PyTorch 1.0+
 
-## Accuracy
-| Model             | Acc.        |
-| ----------------- | ----------- |
-| [VGG16](https://arxiv.org/abs/1409.1556)              | 92.64%      |
-| [ResNet18](https://arxiv.org/abs/1512.03385)          | 93.02%      |
-| [ResNet50](https://arxiv.org/abs/1512.03385)          | 93.62%      |
-| [ResNet101](https://arxiv.org/abs/1512.03385)         | 93.75%      |
-| [RegNetX_200MF](https://arxiv.org/abs/2003.13678)     | 94.24%      |
-| [RegNetY_400MF](https://arxiv.org/abs/2003.13678)     | 94.29%      |
-| [MobileNetV2](https://arxiv.org/abs/1801.04381)       | 94.43%      |
-| [ResNeXt29(32x4d)](https://arxiv.org/abs/1611.05431)  | 94.73%      |
-| [ResNeXt29(2x64d)](https://arxiv.org/abs/1611.05431)  | 94.82%      |
-| [DenseNet121](https://arxiv.org/abs/1608.06993)       | 95.04%      |
-| [PreActResNet18](https://arxiv.org/abs/1603.05027)    | 95.11%      |
-| [DPN92](https://arxiv.org/abs/1707.01629)             | 95.16%      |
 
-## Learning rate adjustment
-I manually change the `lr` during training:
-- `0.1` for epoch `[0,150)`
-- `0.01` for epoch `[150,250)`
-- `0.001` for epoch `[250,350)`
+## 训练
+执行`python tools/train.py`
+默认位300个epoch，训练结束之后，网络权重保存在./checkpoint/fp_ckpt.pkl
 
-Resume the training with `python main.py --resume --lr=0.01`
+## 量化
+执行 `python tools/static_quantize.py`
+会将量化的权重保存在./checkpoint/qat_ckpt.pth
+为了方便使用，还输出了中间变量和量化后的权重到quant_data.pkl

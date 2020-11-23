@@ -8,8 +8,13 @@ import sys
 import time
 import math
 
+import torch
 import torch.nn as nn
 import torch.nn.init as init
+import torchvision as tv
+
+from PIL import Image
+import numpy as np
 
 
 def get_mean_and_std(dataset):
@@ -42,7 +47,7 @@ def init_params(net):
                 init.constant(m.bias, 0)
 
 
-_, term_width = os.popen('stty size', 'r').read().split()
+_, term_width = None, 100 #os.popen('stty size', 'r').read().split()
 term_width = int(term_width)
 
 TOTAL_BAR_LENGTH = 65.
@@ -122,3 +127,15 @@ def format_time(seconds):
     if f == '':
         f = '0ms'
     return f
+
+
+class RGBPreprocess:
+    def __init__(self, alpha, beta):
+        self.alpha = alpha
+        self.beta = beta
+    
+    def __call__(self, pic):
+        assert isinstance(pic, Image.Image)
+        t = torch.tensor(np.array(pic.convert('RGB'))).float()
+        t = t.permute([2, 0, 1]).contiguous()
+        return (t / self.alpha) - self.beta
